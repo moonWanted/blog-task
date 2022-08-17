@@ -1,33 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PostState, Post } from '../types/post'
+import { PostState } from '../types/post'
 
 const initialState: PostState = {
   list: [],
   loading: false,
   error: null,
+  currentPostId: null,
 }
 
 export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    fetchPosts: (state) => {
-      state.loading = true
-    },
-    fetchPostsFailure: (state, action: PayloadAction<{ error: string }>) => {
-      state.loading = false
-      state.error = action.payload.error
-    },
-    fetchPostsSuccess: (state, action: PayloadAction<Post[]>) => {
-      state.list = action.payload
+    setCurrentPostId: (state, action: PayloadAction<string>) => {
+      state.currentPostId = action.payload
     }
   }
 })
 
 export const {
-  fetchPosts,
-  fetchPostsFailure,
-  fetchPostsSuccess,
+  setCurrentPostId,
 } = postSlice.actions
 
 export default postSlice.reducer

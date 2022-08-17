@@ -1,7 +1,5 @@
 export interface CommentState {
   list: Comment[];
-  loading: boolean;
-  error: string | null;
 }
 
 export interface Comment {

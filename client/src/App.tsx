@@ -1,46 +1,45 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import Accordion from 'react-bootstrap/Accordion'
 
 import Post from './components/Post/index'
-import CreatePostModal from './components/CreatePostModal/index'
-import { getPosts, createPost } from './services/api-requests/posts'
-import { fetchPosts, fetchPostsSuccess, fetchPostsFailure } from './store/slices/post'
+import CreatePostModal from './components/CreatePostModal'
+import { setCommentsList } from './store/slices/comment'
 import { useTypedSelector } from './hooks/useTypedSelector'
 import { useAppDispatch } from './hooks/useActions'
+import { useGetPostsQuery, useCreatePostMutation } from './services/api-requests/postApi'
+import { useGetCommentsQuery } from './services/api-requests/commentApi'
 
 function App() {
   const dispatch = useAppDispatch()
-  const { list } = useTypedSelector((state) => state.post)
-  const [showModal, setShowModal] = React.useState<boolean>(false)
+  const { currentPostId } = useTypedSelector((state) => state.post)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [createPost] = useCreatePostMutation()
 
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
-  const handlePostCreate = (user: string, content: string) => {
-    createPost(user, content)
-      .then(() => {
-        handlePostsFetch()
-      })
-  }
-
-  const handlePostsFetch = () => {
-    dispatch(fetchPosts())
-    getPosts()
-      .then(posts => {
-        dispatch(fetchPostsSuccess(posts))
-      })
-      .catch(error => {
-        dispatch(fetchPostsFailure(error))
-      })
-  }
+  // @ts-ignore
+  const { data: posts } = useGetPostsQuery()
+  const { data: comments } = useGetCommentsQuery(currentPostId, {
+    skip: !currentPostId
+  })
 
   useEffect(() => {
-    handlePostsFetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (comments) {
+      dispatch(setCommentsList(comments))
+    }
+  }, [comments, dispatch])
+
+  const handleClose = () => setShowModal(false)
+  const handleShow = () => setShowModal(true)
+  const handlePostCreate = async (user: string, content: string) => {
+    await createPost({
+      user,
+      content
+    })
+  }
 
   return (
     <div className="App">
@@ -57,16 +56,18 @@ function App() {
 
         <Row>
           <Col>
-            {list.map(post => (
-              <Post key={post.id} post={post} handlePostsFetch={handlePostsFetch} />
+            <Accordion defaultActiveKey="-1">
+            {posts && posts.map(post => (
+              <Post key={post.id} post={post} />
             ))}
+            </Accordion>
           </Col>
         </Row>
       </Container>
 
       <CreatePostModal show={showModal} handleClose={handleClose} createPost={handlePostCreate} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

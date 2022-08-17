@@ -12,12 +12,12 @@ interface ToggleProps {
 
 function ContextToggle(props: ToggleProps): JSX.Element {
   const { children, eventKey, callback, size = 'sm' } = props
-  const { activeEventKey } = useContext(AccordionContext);
+  const { activeEventKey } = useContext(AccordionContext)
 
   const decoratedOnClick = useAccordionButton(
     eventKey,
     () => activeEventKey !== eventKey && callback && callback(eventKey),
-  );
+  )
 
 
   return (
@@ -30,7 +30,7 @@ function ContextToggle(props: ToggleProps): JSX.Element {
     >
       {children}
     </Button>
-  );
+  )
 }
 
 export default ContextToggle

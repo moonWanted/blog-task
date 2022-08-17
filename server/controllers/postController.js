@@ -1,5 +1,5 @@
-const { Post, Comment } = require('../models/models')
-const ApiError = require('../error/ApiError')
+import { Post, Comment } from '../models/models.js'
+import ApiError from '../error/ApiError.js'
 
 class PostController {
 
@@ -58,4 +58,4 @@ class PostController {
   }
 }
 
-module.exports = new PostController()
+export default new PostController()

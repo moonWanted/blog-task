@@ -7,36 +7,19 @@ import Button from 'react-bootstrap/Button'
 import CommentSection from '../CommentSection'
 import ContextToggle from '../ContextToggle'
 import { useAppDispatch } from '../../hooks/useActions'
-import { fetchCommentsById, fetchCommentsByIdFailure, fetchCommentsByIdSuccess} from '../../store/slices/comment';
-import { getCommentsById } from '../../services/api-requests/comments'
-import { removePost } from '../../services/api-requests/posts'
+import { useDeletePostMutation } from '../../services/api-requests/postApi'
+import { setCurrentPostId } from '../../store/slices/post'
 
 import { Post as IPost } from '../../store/types/post'
 
-function Post(props: { post: IPost, handlePostsFetch: () => void }): JSX.Element {
-  const { post, handlePostsFetch } = props
+function Post(props: { post: IPost }): JSX.Element {
+  const { post } = props
   const dispatch = useAppDispatch()
+  const [deletePost] = useDeletePostMutation()
 
-  const handleFetchComments = () => {
-    dispatch(fetchCommentsById())
-    getCommentsById(post.id)
-      .then(comments => {
-        dispatch(fetchCommentsByIdSuccess(comments))
-      })
-      .catch(error => {
-        dispatch(fetchCommentsByIdFailure(error))
-      })
-  }
+  const handleSetCurrentPostId = () => dispatch(setCurrentPostId(post.id))
 
-  const handleRemovePost = () => {
-    removePost(post.id)
-      .then(() => {
-        handlePostsFetch()
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+  const handleRemovePost = () => deletePost(post.id)
 
   return (
     <Card
@@ -62,26 +45,26 @@ function Post(props: { post: IPost, handlePostsFetch: () => void }): JSX.Element
         </Card.Text>
       </Card.Body>
       <Card.Footer>
-        <Accordion defaultActiveKey="-1">
+
           <Card bg="dark">
             <Card.Header>
               <ContextToggle
-                eventKey="0"
-                callback={() => handleFetchComments()}
+                eventKey={post.id}
+                callback={handleSetCurrentPostId}
               >
                 Show Comments
               </ContextToggle>
             </Card.Header>
-            <Accordion.Collapse eventKey="0">
+            <Accordion.Collapse eventKey={post.id}>
               <Card.Body>
-                <CommentSection postId={post.id} handleFetchComments={handleFetchComments}/>
+                <CommentSection postId={post.id} />
               </Card.Body>
             </Accordion.Collapse>
           </Card>
-        </Accordion>
+
       </Card.Footer>
     </Card>
-  );
+  )
 }
 
 export default Post

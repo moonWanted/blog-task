@@ -1,9 +1,10 @@
-const Router = require('express')
+import Router from 'express'
+import postRouter from './postRouter.js'
+import commentRouter from './commentRouter.js'
+
 const router = new Router()
-const postRouter = require('./postRouter')
-const commentRouter = require('./commentRouter')
 
 router.use('/post', postRouter)
 router.use('/comment', commentRouter)
 
-module.exports = router
+export default router

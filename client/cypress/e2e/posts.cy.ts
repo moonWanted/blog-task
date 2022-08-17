@@ -1,4 +1,7 @@
 //tests runs with server running in the background
+import MainPage from '../support/PageObjects/MainPage'
+
+const mainPage = new MainPage()
 
 describe('renders the App component', () => {
   it('renders correctly', () => {
@@ -6,29 +9,29 @@ describe('renders the App component', () => {
   })
 
   it('renders Crate Post button', () => {
-    cy.contains('Create Post')
+    mainPage.getCreatePostButton().should('be.visible')
   })
 
   it('click on Crate Post button opens modal', () => {
-    cy.contains('Create Post').click()
-    cy.contains('Your name')
-    cy.contains('Post Content')
+    mainPage.getCreatePostButton().click()
+    cy.contains('Your name').should('be.visible')
+    cy.contains('Post Content').should('be.visible')
   })
 
   it('modal inputs should be empty', () => {
-    cy.get('[id="postForm.name"]')
+    mainPage.getModalNameField()
       .should('have.value', '')
-    cy.get('[id="postForm.content"]')
+    mainPage.getModalContentField()
       .should('have.value', '')
   })
 
   it('submit button should be disabled', () => {
-    cy.get('[type="submit"]').should('be.disabled')
+    mainPage.getModalSubmitButton().should('be.disabled')
   })
 
   it('close button should close modal', () => {
-    cy.contains('Close').click()
-    cy.get('[type="submit"]').should('not.be.visible')
+    mainPage.getModalCloseButton().click()
+    mainPage.getModalSubmitButton().should('not.be.visible')
   })
 })
 
@@ -38,20 +41,19 @@ describe('can create new post', () => {
   })
 
   it('click on Crate Post button ', () => {
-    cy.contains('Create Post').click()
+    mainPage.getCreatePostButton().click()
   })
 
   it('write test data', () => {
-    cy.get('[id="postForm.name"]')
+    mainPage.getModalNameField()
       .type('Test User')
       .should('have.value', 'Test User')
-    cy.get('[id="postForm.content"]')
+    mainPage.getModalContentField()
       .type('Test Content')
       .should('have.value', 'Test Content')
   })
 
   it('click on save changes button', () => {
-    cy.log( cy.get('[type="submit"]'))
     cy.contains('Save Changes').click()
   })
 
@@ -67,10 +69,7 @@ describe('can delete post', () => {
 
   it('delete one of posts', () => {
     cy.contains('Test Content')
-
-    //click on first delete button
-    cy.get(':nth-child(1) > :nth-child(1) > .ms-4').click()
-
+    mainPage.getFirstDeleteButton().click()
     cy.get('Test Content').should('not.exist')
   })
 })

@@ -1,9 +1,9 @@
-const Router = require('express')
+import Router from 'express'
 const router = new Router()
-const commentController = require('../controllers/commentController')
+import commentController from '../controllers/commentController.js'
 
 router.post('/', commentController.create)
 router.get('/:id', commentController.getAllByPostId)
 router.delete('/:id', commentController.removeById)
 
-module.exports = router
+export default router

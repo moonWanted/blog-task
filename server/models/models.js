@@ -1,5 +1,5 @@
-const sequelize = require('../db')
-const { DataTypes } = require('sequelize')
+import sequelize from '../db.js'
+import { DataTypes } from 'sequelize'
 
 const Post = sequelize.define('post', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -27,7 +27,7 @@ Comment.belongsTo(Post)
 Comment.hasMany(replyTo)
 replyTo.belongsTo(Comment)
 
-module.exports = {
+export {
   Post,
   Comment,
 }

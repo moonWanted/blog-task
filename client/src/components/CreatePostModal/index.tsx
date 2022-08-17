@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import Form from "react-bootstrap/Form"
 
 interface Props {
   show: boolean;
@@ -13,8 +13,8 @@ interface Props {
 }
 
 function CreatePostModal(props: Props) {
-  const [content, setContent] = React.useState<string>('')
-  const [user, setUser] = React.useState<string>('')
+  const [content, setContent] = useState<string>('')
+  const [user, setUser] = useState<string>('')
   const { show, createPost, handleClose } = props
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

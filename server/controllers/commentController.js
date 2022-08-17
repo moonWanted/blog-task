@@ -1,5 +1,5 @@
-const { Comment } = require('../models/models')
-const ApiError = require('../error/ApiError')
+import { Comment } from '../models/models.js'
+import ApiError from '../error/ApiError.js'
 
 class CommentController {
 
@@ -47,4 +47,4 @@ class CommentController {
     }
 }
 
-module.exports = new CommentController()
+export default new CommentController()
